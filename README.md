@@ -12,7 +12,7 @@ React, TypeScript, RTK , Material UI
 
 The small SPA application.
 
-Data stored in json-file. All CRUD - operations happen in React
+Data stored in json-file. All CRUD - operations happen in Redux
 
 1.Table of data
 
