@@ -23,7 +23,7 @@ const theme = createTheme();
 
 export const UserEditingModal: React.FC<P> = ({ open, handleClose, user }) => {
   const dispatch = useAppDispatch();
-  const { editUser } = usersDataActions;
+  const { createUser } = usersDataActions;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,7 +50,7 @@ export const UserEditingModal: React.FC<P> = ({ open, handleClose, user }) => {
     };
 
     try {
-      dispatch(editUser(dto));
+      dispatch(createUser(dto));
       handleClose();
     } catch (e) {
       console.log(e);

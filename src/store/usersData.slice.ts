@@ -20,8 +20,20 @@ export const usersDataSlice = createSlice({
       const id = action.payload;
       delete state.usersData[id];
     },
-    editUser(state, action: PayloadAction<IUserData>) {
-      console.log(action);
+    editUserCell(state, action: PayloadAction<any>) {
+      const {
+        userInfo: editedUser,
+        cellValue,
+        cellPathInDictionary,
+      } = action.payload;
+      // console.log(editedUser, cellValue, cellPathInDictionary);
+      state.usersData = {
+        ...state.usersData,
+        [editedUser.id]: { ...editedUser, [cellPathInDictionary]: cellValue },
+      };
+    },
+    createUser(state, action: PayloadAction<IUserData>) {
+      // console.log(action);
       const editedUser = action.payload;
       state.usersData = { ...state.usersData, [editedUser.id]: editedUser };
     },

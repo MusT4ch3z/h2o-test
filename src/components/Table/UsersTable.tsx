@@ -1,5 +1,4 @@
 import {
-  Paper,
   TableContainer,
   Table,
   TableHead,
@@ -9,19 +8,113 @@ import {
   TableFooter,
   TablePagination,
   IconButton,
+  Typography,
+  useTheme,
+  Box,
 } from "@mui/material";
 import CustomTableCell from "./CustomTableCell";
-import { UserEditingModal } from "./UserEditingModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { IUserData } from "../../types";
+import { IColumn, IUserData } from "../../types";
 import { useEffect, useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { usersDataActions } from "../../store/usersData.slice";
 import { styles } from "../../styles";
+import { Dictionary } from "@reduxjs/toolkit";
+import { compact, isNil, keyBy } from "lodash";
+import { UserEditingModal } from "./UserEditingModal";
+
+const defaultColumns: IColumn<IUserData>[] = [
+  {
+    title: "Общая информация",
+    colSpan: 4,
+    children: [
+      {
+        title: "Name",
+        render: (user: IUserData) => user.name,
+      },
+      {
+        title: "ID",
+        render: (user: IUserData) => user.id,
+      },
+      {
+        title: "Username",
+        render: (user: IUserData) => user.username,
+      },
+      {
+        title: "Email",
+        render: (user: IUserData) => user.email,
+      },
+    ],
+  },
+  {
+    title: "Адрес",
+    colSpan: 5,
+    isCollapsed: false,
+    render: ({ address: { street, suite, city, zipcode } }) => (
+      <Typography
+        fontSize={14}
+      >{`${street}, ${suite}, ${city}, ${zipcode}`}</Typography>
+    ),
+    children: [
+      {
+        title: "Street",
+        render: (user: IUserData) => user.address.street,
+      },
+      {
+        title: "Suite",
+        render: (user: IUserData) => user.address.suite,
+      },
+      {
+        title: "City",
+        render: (user: IUserData) => user.address.city,
+      },
+      {
+        title: "Zipcode",
+        render: (user: IUserData) => user.address.zipcode,
+      },
+      {
+        title: "Geo lat",
+        render: (user: IUserData) => user.address.geo.lat,
+      },
+    ],
+  },
+  {
+    title: "Контакты",
+    colSpan: 2,
+    children: [
+      {
+        title: "Phone",
+        render: (user: IUserData) => user.phone,
+      },
+      {
+        title: "Website",
+        render: (user: IUserData) => user.website,
+      },
+    ],
+  },
+  {
+    title: "Компания",
+    colSpan: 3,
+    children: [
+      {
+        title: "Name",
+        render: (user: IUserData) => user.company.name,
+      },
+      {
+        title: "Catch Phrase",
+        render: (user: IUserData) => user.company.catchPhrase,
+      },
+      {
+        title: "Service",
+        render: (user: IUserData) => user.company.bs,
+      },
+    ],
+  },
+];
 
 const UsersTable = () => {
+  const isEditMode = useAppSelector((state) => state.editMode.editMode);
   const usersData = useAppSelector((state) => state.usersData.usersData);
   const searchValue = useAppSelector((state) => state.usersData.searchValue);
   const [filteredUsersData, setFilteredUsersData] = useState<IUserData[]>(
@@ -33,15 +126,19 @@ const UsersTable = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
   const [userInfo, setUserInfo] = useState<IUserData>();
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [columns, setColumns] = useState<Dictionary<IColumn<IUserData>>>(
+    keyBy(defaultColumns, "title")
+  );
   const [dataToRender, setDataToRender] = useState<IUserData[]>();
+  const theme = useTheme();
+
+  const handleRemoveUser = (id: number) => {
+    dispatch(removeUser(id));
+  };
 
   const handleCloseEditModal = () => {
     setIsModalOpen(false);
     setUserInfo(undefined);
-  };
-
-  const handleRemoveUser = (id: number) => {
-    dispatch(removeUser(id));
   };
 
   useEffect(() => {
@@ -68,30 +165,53 @@ const UsersTable = () => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
+
   const handlePageChange = (p: number) => {
     setPage(p);
   };
 
-  const subColumns = [
-    "Name",
-    "ID",
-    "Username",
-    "E-mail",
-    "Street",
-    "Suite",
-    "City",
-    "Zipcode",
-    "Geo Latitude",
-    "Phone",
-    "Website",
-    "Company Name",
-    "Catch Phrase",
-    "Service",
-    "",
-  ];
+  const handleExpand = (id: string) => {
+    setColumns({
+      ...columns,
+      [id]: {
+        ...(columns[id] as IColumn<IUserData>),
+        isCollapsed: !columns[id]?.isCollapsed,
+      },
+    });
+  };
+
+  const renderHeaderCell =
+    (isChildrenHeader?: boolean) =>
+    ({ colSpan, title, isCollapsed }: IColumn<IUserData>) =>
+      (
+        <TableCell
+          key={title}
+          align="center"
+          colSpan={isCollapsed ? 1 : colSpan}
+          onClick={() =>
+            !isChildrenHeader && !isNil(isCollapsed) && handleExpand(title)
+          }
+          sx={{ color: `${theme.palette.primary.main}` }}
+        >
+          {isCollapsed && isChildrenHeader ? "" : title}
+        </TableCell>
+      );
+
+  const renderCell =
+    (user: IUserData) =>
+    ({ render }: IColumn<IUserData>) =>
+      (
+        <CustomTableCell
+          cellPath={render!}
+          data={render?.(user)}
+          userInfo={user}
+        />
+      );
+
+  const arrayOfCols = compact(Object.values(columns));
 
   return (
-    <div>
+    <Box component="div">
       {(isModalOpen || userInfo) && (
         <UserEditingModal
           open
@@ -99,59 +219,31 @@ const UsersTable = () => {
           user={userInfo}
         />
       )}
-      <Paper sx={{ width: "100%" }}>
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow sx={styles.tableRowHeader}>
-                <TableCell />
-                <TableCell align="center" colSpan={3}>
-                  Общая информация
-                </TableCell>
-                <TableCell align="center" colSpan={5}>
-                  Адрес
-                </TableCell>
-                <TableCell align="center" colSpan={2}>
-                  Контакты
-                </TableCell>
-                <TableCell align="center" colSpan={4}>
-                  Компания
-                </TableCell>
-              </TableRow>
-              <TableRow sx={styles.tableRowHeader}>
-                {subColumns.map((i) => (
-                  <TableCell align="center">{i}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
+      <TableContainer sx={styles.tableContainer}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow sx={styles.tableRowHeader} key={"mainHeaders"}>
+              {arrayOfCols.map(renderHeaderCell())}
+            </TableRow>
+            <TableRow sx={styles.tableRowHeader} key={"childrenHeaders"}>
+              {arrayOfCols.map((col: IColumn<IUserData>) =>
+                !col.isCollapsed
+                  ? col.children?.map(renderHeaderCell(true))
+                  : renderHeaderCell(true)(col)
+              )}
+            </TableRow>
+          </TableHead>
 
-            <TableBody>
-              {dataToRender?.map((user: IUserData) => (
-                <TableRow key={user.name}>
-                  <CustomTableCell data={user.name} />
-                  <CustomTableCell data={user.id} />
-                  <CustomTableCell data={user.username} />
-                  <CustomTableCell data={user.email} />
-                  <CustomTableCell data={user.address.street} />
-                  <CustomTableCell data={user.address.suite} />
-                  <CustomTableCell data={user.address.city} />
-                  <CustomTableCell data={user.address.zipcode} />
-                  <CustomTableCell data={user.address.geo.lat} />
-                  <CustomTableCell data={user.phone} />
-                  <CustomTableCell data={user.website} />
-                  <CustomTableCell data={user.company.name} />
-                  <CustomTableCell data={user.company.catchPhrase} />
-                  <CustomTableCell data={user.company.bs} />
-                  <TableCell sx={{ padding: "10px" }}>
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => {
-                        setUserInfo(user);
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
+          <TableBody>
+            {dataToRender?.map((user: IUserData) => (
+              <TableRow key={userInfo?.name} sx={styles.tableRowBody}>
+                {arrayOfCols.map((col: IColumn<IUserData>) =>
+                  !col.isCollapsed
+                    ? col.children?.map(renderCell(user))
+                    : renderCell(user)(col)
+                )}
+                {isEditMode && (
+                  <TableCell>
                     <IconButton
                       aria-label="delete"
                       color="warning"
@@ -160,37 +252,38 @@ const UsersTable = () => {
                       <DeleteOutlineIcon />
                     </IconButton>
                   </TableCell>
-                </TableRow>
-              ))}
-              <TableRow>
-                <TableCell colSpan={14} />
-                <TableCell align="left">
-                  <IconButton
-                    aria-label="add"
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </TableCell>
+                )}
               </TableRow>
-            </TableBody>
+            ))}
+            <TableRow>
+              <TableCell colSpan={13} />
+              <TableCell align="right">
+                <IconButton
+                  aria-label="add"
+                  color="primary"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <AddIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          </TableBody>
 
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  count={Object.values(usersData).length}
-                  onPageChange={(e, p) => handlePageChange(p)}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  rowsPerPageOptions={[5, 10, 20, 50]}
-                  onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </div>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                count={Object.values(usersData).length}
+                onPageChange={(e, p) => handlePageChange(p)}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                rowsPerPageOptions={[5, 10, 20, 50]}
+                onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

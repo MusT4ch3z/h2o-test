@@ -27,3 +27,17 @@ export interface ICompany {
   catchPhrase: string;
   bs: string;
 }
+
+export interface IColumn<T> {
+  colSpan?: number;
+  title: string;
+  isCollapsed?: boolean;
+  render?: (data: T) => string | JSX.Element | number;
+  children?: IColumn<T>[];
+}
+
+export interface ITableCellProps {
+  cellPath: (data: IUserData) => string | number | JSX.Element;
+  data: any;
+  userInfo: IUserData;
+}

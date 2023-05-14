@@ -1,5 +1,20 @@
 export const styles = {
-  tableRowHeader: { "& > th": { fontWeight: 700 } },
+  tableContainer: {
+    overflow: "auto",
+    borderTopLeftRadius: "30px",
+    borderTopRightRadius: "30px",
+  },
+  tableRowHeader: {
+    "& > th": { fontWeight: 700 },
+  },
+  tableRowBody: {
+    "&:nth-of-type(even)": {
+      backgroundColor: "#f2fbfa",
+    },
+    "&:nth-of-type(even)>:first-of-type": {
+      backgroundColor: "#fff",
+    },
+  },
   editingModal: {
     position: "absolute" as "absolute",
     top: "50%",
@@ -14,5 +29,18 @@ export const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyItems: "center",
+  },
+  customTableCell: {
+    padding: "16px 8px 16px 16px",
+    ":hover": { color: "#54d3c2", cursor: "pointer" },
+  },
+  leftSideBarBox: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  leftSideBarButtons: {
+    color: "#fff",
+    "&:hover": { borderRadius: "15px", backgroundColor: "#91ded4" },
   },
 };
