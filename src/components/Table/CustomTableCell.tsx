@@ -25,11 +25,9 @@ const CustomTableCell = ({ cellPath, data, userInfo }: ITableCellProps) => {
       className="customTableCell"
       key={data}
       sx={styles.customTableCell}
-      onClick={() => console.log(data, cellPathInDictionary, userInfo)}
     >
       {isEditMode ? (
         <Input
-          defaultValue={data}
           value={cellValue}
           fullWidth={true}
           onChange={(e) => setCellValue(e.target.value)}

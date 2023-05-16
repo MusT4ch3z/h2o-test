@@ -14,6 +14,7 @@ import { usersDataActions } from "../store/usersData.slice";
 import EditModeButton from "./EditModeButton";
 import { values } from "lodash";
 import Typography from "@mui/material/Typography";
+import { styles } from "../styles";
 
 const SearchForm = () => {
   const dispatch = useAppDispatch();
@@ -35,17 +36,7 @@ const SearchForm = () => {
   };
 
   return (
-    <Box
-      component="form"
-      sx={{
-        margin: "25px 0px 10px 0px",
-        padding: "20px",
-        display: "flex",
-        backgroundColor: "#fff",
-        borderRadius: "30px",
-      }}
-      onSubmit={handleSubmit}
-    >
+    <Box component="form" sx={styles.searchFormBox} onSubmit={handleSubmit}>
       <Box
         component="div"
         sx={{ display: "flex", gap: "10px", alignItems: "center" }}
@@ -68,7 +59,6 @@ const SearchForm = () => {
         <OutlinedInput
           defaultValue="Ervin Howell"
           id="userSearch"
-          type="search"
           name="userSearch"
           startAdornment={
             <InputAdornment position="start">
@@ -77,28 +67,17 @@ const SearchForm = () => {
               </IconButton>
             </InputAdornment>
           }
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton edge="end" type="reset" onClick={handleClearSearch}>
+                <ClearIcon color="action" />
+              </IconButton>
+            </InputAdornment>
+          }
           label="Search by Name"
         />
       </FormControl>
 
-      {/* <TextField
-        type="search"
-        id="userSearch"
-        name="userSearch"
-        label="Search User by Name"
-        defaultValue="Ervin Howell"
-      /> */}
-      {/* <IconButton color="primary" type="submit" sx={{ margin: "1px 0.7rem" }}>
-        <SearchIcon fontSize="medium" color="action" />
-      </IconButton>
-      <IconButton
-        color="primary"
-        type="reset"
-        onClick={handleClearSearch}
-        sx={{ margin: "1px 0.7rem" }}
-      >
-        <ClearIcon fontSize="large" color="action" />
-      </IconButton> */}
       <EditModeButton />
     </Box>
   );

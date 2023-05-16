@@ -5,8 +5,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TableFooter,
-  TablePagination,
   IconButton,
   Typography,
   useTheme,
@@ -21,8 +19,11 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { usersDataActions } from "../../store/usersData.slice";
 import { styles } from "../../styles";
 import { Dictionary } from "@reduxjs/toolkit";
-import { compact, isNil, keyBy } from "lodash";
+import { compact, has, isNil, keyBy, keys, values } from "lodash";
 import { UserEditingModal } from "./UserEditingModal";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CustomPagination from "../CustomPagination";
 
 const defaultColumns: IColumn<IUserData>[] = [
   {
@@ -117,20 +118,28 @@ const UsersTable = () => {
   const isEditMode = useAppSelector((state) => state.editMode.editMode);
   const usersData = useAppSelector((state) => state.usersData.usersData);
   const searchValue = useAppSelector((state) => state.usersData.searchValue);
+  const { page, rowsPerPage } = useAppSelector((state) => state.pagination);
   const [filteredUsersData, setFilteredUsersData] = useState<IUserData[]>(
     Object.values(usersData)
   );
   const dispatch = useAppDispatch();
   const { removeUser } = usersDataActions;
-  const [page, setPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
   const [userInfo, setUserInfo] = useState<IUserData>();
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [columns, setColumns] = useState<Dictionary<IColumn<IUserData>>>(
     keyBy(defaultColumns, "title")
   );
   const [dataToRender, setDataToRender] = useState<IUserData[]>();
   const theme = useTheme();
+  const styleExpandCollapseButton = {
+    padding: "0px 8px",
+    float: "right",
+    ":hover": {
+      color: `${theme.palette.primary.main}`,
+      backgroundColor: "transparent",
+      cursor: "pointer",
+    },
+  };
 
   const handleRemoveUser = (id: number) => {
     dispatch(removeUser(id));
@@ -154,28 +163,20 @@ const UsersTable = () => {
   useEffect(
     () =>
       setDataToRender(
-        filteredUsersData!.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+        filteredUsersData!.slice(
+          (page - 1 || 0) * rowsPerPage,
+          page * rowsPerPage
+        )
       ),
     [page, filteredUsersData, rowsPerPage]
   );
 
-  const handleChangeRowsPerPage = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
-    setPage(0);
-  };
-
-  const handlePageChange = (p: number) => {
-    setPage(p);
-  };
-
-  const handleExpand = (id: string) => {
+  const handleExpand = (title: string) => {
     setColumns({
       ...columns,
-      [id]: {
-        ...(columns[id] as IColumn<IUserData>),
-        isCollapsed: !columns[id]?.isCollapsed,
+      [title]: {
+        ...(columns[title] as IColumn<IUserData>),
+        isCollapsed: !columns[title]?.isCollapsed,
       },
     });
   };
@@ -188,12 +189,34 @@ const UsersTable = () => {
           key={title}
           align="center"
           colSpan={isCollapsed ? 1 : colSpan}
-          onClick={() =>
-            !isChildrenHeader && !isNil(isCollapsed) && handleExpand(title)
-          }
           sx={{ color: `${theme.palette.primary.main}` }}
         >
           {isCollapsed && isChildrenHeader ? "" : title}
+          {!isChildrenHeader &&
+            !isNil(isCollapsed) &&
+            !isCollapsed &&
+            !isEditMode && (
+              <IconButton
+                onClick={() =>
+                  !isChildrenHeader &&
+                  !isNil(isCollapsed) &&
+                  handleExpand(title)
+                }
+                sx={styleExpandCollapseButton}
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+            )}
+          {!isChildrenHeader && isCollapsed && !isEditMode && (
+            <IconButton
+              onClick={() =>
+                !isChildrenHeader && !isNil(isCollapsed) && handleExpand(title)
+              }
+              sx={styleExpandCollapseButton}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          )}
         </TableCell>
       );
 
@@ -208,7 +231,28 @@ const UsersTable = () => {
         />
       );
 
-  const arrayOfCols = compact(Object.values(columns));
+  const arrayOfCols = compact(values(columns));
+
+  const expandColumnsInEditMode = () =>
+    isEditMode &&
+    setColumns(
+      keys(columns).reduce((res, key) => {
+        const column = columns[key] as IColumn<IUserData>;
+        return has(column, "isCollapsed")
+          ? {
+              ...res,
+              [key]: {
+                ...column,
+                isCollapsed: false,
+              },
+            }
+          : res;
+      }, columns)
+    );
+
+  useEffect(() => {
+    expandColumnsInEditMode();
+  }, [isEditMode]);
 
   return (
     <Box component="div">
@@ -224,6 +268,7 @@ const UsersTable = () => {
           <TableHead>
             <TableRow sx={styles.tableRowHeader} key={"mainHeaders"}>
               {arrayOfCols.map(renderHeaderCell())}
+              {isEditMode && <TableCell />}
             </TableRow>
             <TableRow sx={styles.tableRowHeader} key={"childrenHeaders"}>
               {arrayOfCols.map((col: IColumn<IUserData>) =>
@@ -231,6 +276,7 @@ const UsersTable = () => {
                   ? col.children?.map(renderHeaderCell(true))
                   : renderHeaderCell(true)(col)
               )}
+              {isEditMode && <TableCell />}
             </TableRow>
           </TableHead>
 
@@ -256,8 +302,8 @@ const UsersTable = () => {
               </TableRow>
             ))}
             <TableRow>
-              <TableCell colSpan={13} />
-              <TableCell align="right">
+              <TableCell colSpan={13} sx={{ padding: "0px" }} />
+              <TableCell align="right" sx={{ padding: "0px" }}>
                 <IconButton
                   aria-label="add"
                   color="primary"
@@ -268,21 +314,15 @@ const UsersTable = () => {
               </TableCell>
             </TableRow>
           </TableBody>
-
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={Object.values(usersData).length}
-                onPageChange={(e, p) => handlePageChange(p)}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
-              />
-            </TableRow>
-          </TableFooter>
         </Table>
       </TableContainer>
+
+      <CustomPagination
+        count={values(usersData).length}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[5, 10, 20, 50]}
+      />
     </Box>
   );
 };

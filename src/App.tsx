@@ -6,15 +6,35 @@ import { ThemeProvider } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
 
 function App() {
+  const paletteMainColor = "#54d3c2";
   const theme = createTheme({
     components: {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            background: "linear-gradient(180deg, #54d3c2 30%, #30898a 90%)",
+            background: `linear-gradient(180deg, ${paletteMainColor} 30%, #30898a 90%)`,
             backgroundRepeat: "no-repeat",
             backgroundAttachment: "fixed",
           },
+        },
+      },
+      MuiPaginationItem: {
+        styleOverrides: {
+          // root: {
+          //   ":hover": {
+          //     color: paletteMainColor,
+          //     backgroundColor: "transparent",
+          //   },
+          // },
+          page: { fontWeight: "700" },
+          selected: {
+            backgroundColor: "transparent",
+            color: paletteMainColor,
+          },
+          // focusVisible: {
+          //   backgroundColor: "transparent",
+          //   color: paletteMainColor,
+          // },
         },
       },
       MuiInputAdornment: {
@@ -35,7 +55,7 @@ function App() {
         styleOverrides: {
           input: {
             "&:-webkit-autofill": {
-              "-webkitBoxShadow": "0 0 0 100px #f8f8f8 inset",
+              boxShadow: "0 0 0 100px #f8f8f8 inset",
             },
             backgroundColor: "#f8f8f8",
             "::placeholder": { color: grey[500] },
@@ -45,13 +65,13 @@ function App() {
     },
     palette: {
       primary: {
-        main: "#54d3c2",
+        main: paletteMainColor,
       },
     },
   });
 
   return (
-    <div className="app">
+    <Box className="app" sx={{ height: "100%" }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LeftSideBar />
@@ -60,13 +80,15 @@ function App() {
             ml: "60px",
             backgroundColor: "#fff",
             borderTopLeftRadius: "50px",
+            borderBottomLeftRadius: "50px",
+            height: "100%",
           }}
         >
           <Navbar />
           <Main />
         </Box>
       </ThemeProvider>
-    </div>
+    </Box>
   );
 }
 
