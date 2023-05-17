@@ -18,6 +18,7 @@ const CustomPagination = ({ count, rowsPerPageOptions }: any) => {
   const theme = useTheme();
 
   const stylePaginationIcons = {
+    fontWeight: "700",
     ":hover": {
       color: "#54d3c2",
       backgroundColor: "transparent",
@@ -33,7 +34,7 @@ const CustomPagination = ({ count, rowsPerPageOptions }: any) => {
 
   const stylePaginationSelect = {
     "&>.MuiSelect-outlined": {
-      fontSize:"14px",
+      fontSize: "14px",
       padding: "5px 28px 5px 10px",
     },
   };

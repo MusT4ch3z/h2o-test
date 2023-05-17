@@ -18,7 +18,6 @@ export const paginationSlice = createSlice({
       state.page = action.payload;
     },
     setRowsPerPage(state, action: PayloadAction<number>) {
-      console.log(action.payload);
       state.rowsPerPage = action.payload;
     },
   },

@@ -17,6 +17,25 @@ const Navbar = () => {
   const navLinksArray = ["Общая база сотрудников", "Navlink2", "Navlink3"];
   const [activeNavLink, setActiveNavLink] = useState<string>(navLinksArray[0]);
 
+  const styleAppBar = {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: "50px",
+    boxShadow: "none",
+  };
+  const styleAppBarNavBtn = (i: string) => {
+    return {
+      color: "lightgray",
+      display: "block",
+      borderBottom:
+        activeNavLink === i
+          ? `${theme.palette.primary.main} 3px solid`
+          : "lightgray 1px solid",
+      borderRadius: "0",
+      transition: "all",
+      transitionDuration: "100ms",
+    };
+  };
+
   const onChangeActiveNavLink = (key: string) => {
     let activeNLIndex = findIndex(navLinksArray, (i) => i === activeNavLink);
     switch (key) {
@@ -45,14 +64,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: "#fff",
-          borderTopLeftRadius: "50px",
-          boxShadow: "none",
-        }}
-      >
+      <AppBar position="static" sx={styleAppBar}>
         <Toolbar>
           <IconButton
             sx={{ padding: "4px" }}
@@ -69,17 +81,7 @@ const Navbar = () => {
           {navLinksArray.map((i) => (
             <Button
               key={i}
-              sx={{
-                color: "lightgray",
-                display: "block",
-                borderBottom:
-                  activeNavLink === i
-                    ? `${theme.palette.primary.main} 3px solid`
-                    : "lightgray 1px solid",
-                borderRadius: "0",
-                transition: "all",
-                transitionDuration: "100ms",
-              }}
+              sx={styleAppBarNavBtn(i)}
               onClick={() => setActiveNavLink(i)}
             >
               <Typography

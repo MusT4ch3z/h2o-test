@@ -1,5 +1,4 @@
-import { Input, TableCell } from "@mui/material";
-import { styles } from "../../styles";
+import { Input, TableCell, useTheme } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { ITableCellProps } from "../../types";
 import { usersDataActions } from "../../store/usersData.slice";
@@ -11,9 +10,22 @@ const CustomTableCell = ({ cellPath, data, userInfo }: ITableCellProps) => {
   const [cellValue, setCellValue] = useState<string | null>(data);
   const cellPathInDictionary = cellPath.toString().slice(13);
   const isEditMode = useAppSelector((state) => state.editMode.editMode);
+  const theme = useTheme();
 
   const dispatchTableChanges = () => {
     dispatch(editUserCell({ userInfo, cellValue, cellPathInDictionary }));
+  };
+
+  const styleCustomTableCell = {
+    whiteSpace: "nowrap",
+    ":hover": { color: theme.palette.primary.main, cursor: "pointer" },
+    transitionDuration: "300ms",
+  };
+  const styleCustomTableCellInput = {
+    padding: "0px 8px 0px 16px",
+    whiteSpace: "nowrap",
+    ":hover": { color: theme.palette.primary.main, cursor: "pointer" },
+    transitionDuration: "300ms",
   };
 
   useEffect(() => {
@@ -22,9 +34,8 @@ const CustomTableCell = ({ cellPath, data, userInfo }: ITableCellProps) => {
 
   return (
     <TableCell
-      className="customTableCell"
-      key={data}
-      sx={styles.customTableCell}
+      variant="body"
+      sx={isEditMode ? styleCustomTableCellInput : styleCustomTableCell}
     >
       {isEditMode ? (
         <Input
@@ -35,6 +46,7 @@ const CustomTableCell = ({ cellPath, data, userInfo }: ITableCellProps) => {
           sx={{
             backgroundColor: "transparent",
             fontSize: "14px",
+            width: "10rem",
           }}
         />
       ) : (

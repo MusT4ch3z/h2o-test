@@ -21,6 +21,13 @@ interface P {
 
 const theme = createTheme();
 
+const styleModalBox = {
+  marginTop: 4,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
 export const UserEditingModal: React.FC<P> = ({ open, handleClose, user }) => {
   const dispatch = useAppDispatch();
   const { createUser } = usersDataActions;
@@ -69,14 +76,7 @@ export const UserEditingModal: React.FC<P> = ({ open, handleClose, user }) => {
           <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
               <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 4,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
+              <Box sx={styleModalBox}>
                 <Typography component="h1" variant="h5">
                   {user ? "Edit" : "Create"} Item
                 </Typography>

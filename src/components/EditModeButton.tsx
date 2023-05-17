@@ -10,25 +10,27 @@ const EditModeButton = () => {
     dispatch(switchEditMode());
   };
   const theme = useTheme();
+  const styleEditModeButton = {
+    marginLeft: "auto",
+    marginRight: "0",
+    padding: "0px 15px",
+    border: `${theme.palette.primary.main} 3px solid`,
+    borderRadius: "20px",
+    color: `${isEditMode && "#fff"}`,
+    textTransform: "none",
+    ":hover": {
+      border: `${
+        isEditMode ? theme.palette.primary.dark : theme.palette.primary.main
+      } 3px solid`,
+      color: `${isEditMode && "#fff"}`,
+    },
+  };
+
   return (
     <Button
       variant={isEditMode ? "contained" : "outlined"}
       onClick={switchModeHandler}
-      sx={{
-        marginLeft: "auto",
-        marginRight: "0",
-        padding: "0px 15px",
-        border: `${theme.palette.primary.main} 3px solid`,
-        borderRadius: "20px",
-        color: `${isEditMode && "#fff"}`,
-        textTransform: "none",
-        ":hover": {
-          border: `${
-            isEditMode ? theme.palette.primary.dark : theme.palette.primary.main
-          } 3px solid`,
-          color: `${isEditMode && "#fff"}`,
-        },
-      }}
+      sx={styleEditModeButton}
     >
       <Typography fontWeight={600} fontSize={14}>
         Режим редактирования

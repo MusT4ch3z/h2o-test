@@ -1,6 +1,6 @@
 export const styles = {
   tableContainer: {
-    marginBottom:"20px",
+    marginBottom: "20px",
     height: "auto",
     maxHeight: "65vh",
     overflow: "auto",
@@ -8,8 +8,8 @@ export const styles = {
     borderTopRightRadius: "30px",
     borderBottomLeftRadius: "30px",
     "&::-webkit-scrollbar": {
-      width: "5px",
-      height: "5px",
+      width: "8px",
+      height: "8px",
     },
     "&::-webkit-scrollbar-thumb": {
       backgroundColor: "#b6bcc3",
@@ -43,12 +43,6 @@ export const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyItems: "center",
-  },
-  customTableCell: {
-    padding: "16px 8px 16px 16px",
-    whiteSpace: "nowrap",
-    ":hover": { color: "#54d3c2", cursor: "pointer" },
-    transitionDuration: "300ms",
   },
   leftSideBarBox: {
     display: "flex",

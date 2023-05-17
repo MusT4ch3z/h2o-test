@@ -26,14 +26,12 @@ export const usersDataSlice = createSlice({
         cellValue,
         cellPathInDictionary,
       } = action.payload;
-      // console.log(editedUser, cellValue, cellPathInDictionary);
       state.usersData = {
         ...state.usersData,
         [editedUser.id]: { ...editedUser, [cellPathInDictionary]: cellValue },
       };
     },
     createUser(state, action: PayloadAction<IUserData>) {
-      // console.log(action);
       const editedUser = action.payload;
       state.usersData = { ...state.usersData, [editedUser.id]: editedUser };
     },

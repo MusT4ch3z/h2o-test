@@ -3,18 +3,17 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const AvatarCard = () => {
   const theme = useTheme();
+  const styleAvatarCardBox = {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    marginLeft: "auto",
+    marginRight: "10%",
+    lineHeight: "1",
+  };
+
   return (
-    <Box
-      component="div"
-      sx={{
-        display: "flex",
-        gap: "10px",
-        alignItems: "center",
-        marginLeft: "auto",
-        marginRight: "10%",
-        lineHeight: "1",
-      }}
-    >
+    <Box component="div" sx={styleAvatarCardBox}>
       <Avatar />
       <Box component="div">
         <Typography
@@ -29,7 +28,7 @@ const AvatarCard = () => {
           Teamlead
         </Typography>
       </Box>
-      <IconButton sx={{marginLeft:"60%"}}>
+      <IconButton sx={{ marginLeft: "60%" }}>
         <KeyboardArrowDownIcon />
       </IconButton>
     </Box>

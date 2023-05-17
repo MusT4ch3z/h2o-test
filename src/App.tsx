@@ -18,25 +18,6 @@ function App() {
           },
         },
       },
-      MuiPaginationItem: {
-        styleOverrides: {
-          // root: {
-          //   ":hover": {
-          //     color: paletteMainColor,
-          //     backgroundColor: "transparent",
-          //   },
-          // },
-          page: { fontWeight: "700" },
-          selected: {
-            backgroundColor: "transparent",
-            color: paletteMainColor,
-          },
-          // focusVisible: {
-          //   backgroundColor: "transparent",
-          //   color: paletteMainColor,
-          // },
-        },
-      },
       MuiInputAdornment: {
         styleOverrides: {
           root: {
@@ -69,21 +50,20 @@ function App() {
       },
     },
   });
+  const styleMainPageBody = {
+    ml: "60px",
+    backgroundColor: "#fff",
+    borderTopLeftRadius: "50px",
+    borderBottomLeftRadius: "50px",
+    height: "100%",
+  };
 
   return (
     <Box className="app" sx={{ height: "100%" }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LeftSideBar />
-        <Box
-          sx={{
-            ml: "60px",
-            backgroundColor: "#fff",
-            borderTopLeftRadius: "50px",
-            borderBottomLeftRadius: "50px",
-            height: "100%",
-          }}
-        >
+        <Box sx={styleMainPageBody}>
           <Navbar />
           <Main />
         </Box>

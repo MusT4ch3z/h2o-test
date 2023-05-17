@@ -99,7 +99,7 @@ const defaultColumns: IColumn<IUserData>[] = [
     colSpan: 3,
     children: [
       {
-        title: "Name",
+        title: "Company Name",
         render: (user: IUserData) => user.company.name,
       },
       {
@@ -152,10 +152,10 @@ const UsersTable = () => {
 
   useEffect(() => {
     if (!searchValue) {
-      setFilteredUsersData(Object.values(usersData));
+      setFilteredUsersData(values(usersData));
     } else {
       setFilteredUsersData(
-        Object.values(usersData).filter((i) => i.name === searchValue)
+        values(usersData).filter((i) => i.name === searchValue)
       );
     }
   }, [searchValue, usersData]);
@@ -186,6 +186,7 @@ const UsersTable = () => {
     ({ colSpan, title, isCollapsed }: IColumn<IUserData>) =>
       (
         <TableCell
+          variant="head"
           key={title}
           align="center"
           colSpan={isCollapsed ? 1 : colSpan}
@@ -197,6 +198,7 @@ const UsersTable = () => {
             !isCollapsed &&
             !isEditMode && (
               <IconButton
+                key="collapseButton"
                 onClick={() =>
                   !isChildrenHeader &&
                   !isNil(isCollapsed) &&
@@ -209,6 +211,7 @@ const UsersTable = () => {
             )}
           {!isChildrenHeader && isCollapsed && !isEditMode && (
             <IconButton
+              key="expandButton"
               onClick={() =>
                 !isChildrenHeader && !isNil(isCollapsed) && handleExpand(title)
               }
@@ -225,6 +228,7 @@ const UsersTable = () => {
     ({ render }: IColumn<IUserData>) =>
       (
         <CustomTableCell
+          key={render?.(user) as string}
           cellPath={render!}
           data={render?.(user)}
           userInfo={user}
@@ -266,11 +270,11 @@ const UsersTable = () => {
       <TableContainer sx={styles.tableContainer}>
         <Table stickyHeader>
           <TableHead>
-            <TableRow sx={styles.tableRowHeader} key={"mainHeaders"}>
+            <TableRow sx={styles.tableRowHeader} key="mainHeaders">
               {arrayOfCols.map(renderHeaderCell())}
               {isEditMode && <TableCell />}
             </TableRow>
-            <TableRow sx={styles.tableRowHeader} key={"childrenHeaders"}>
+            <TableRow sx={styles.tableRowHeader} key="childrenHeaders">
               {arrayOfCols.map((col: IColumn<IUserData>) =>
                 !col.isCollapsed
                   ? col.children?.map(renderHeaderCell(true))
@@ -289,7 +293,7 @@ const UsersTable = () => {
                     : renderCell(user)(col)
                 )}
                 {isEditMode && (
-                  <TableCell>
+                  <TableCell key="deleteUser">
                     <IconButton
                       aria-label="delete"
                       color="warning"
@@ -301,9 +305,17 @@ const UsersTable = () => {
                 )}
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell colSpan={13} sx={{ padding: "0px" }} />
-              <TableCell align="right" sx={{ padding: "0px" }}>
+            <TableRow key="addNewUserRow">
+              <TableCell
+                key="emptyTableCells"
+                colSpan={13}
+                sx={{ padding: "0px" }}
+              />
+              <TableCell
+                key="addNewUserCell"
+                align="right"
+                sx={{ padding: "0px" }}
+              >
                 <IconButton
                   aria-label="add"
                   color="primary"
