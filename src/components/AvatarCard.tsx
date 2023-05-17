@@ -22,10 +22,10 @@ const AvatarCard = () => {
           fontSize={14}
           marginBottom="0"
         >
-          Anton
+          Татьяна
         </Typography>
         <Typography color={`${theme.palette.text.disabled}`} variant="caption">
-          Teamlead
+          HR
         </Typography>
       </Box>
       <IconButton sx={{ marginLeft: "60%" }}>
