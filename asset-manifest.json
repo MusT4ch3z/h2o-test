@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/h2o-test/static/css/main.e6c13ad2.css",
-    "main.js": "/h2o-test/static/js/main.e87bf4d8.js",
+    "main.css": "/h2o-test/static/css/main.d786631d.css",
+    "main.js": "/h2o-test/static/js/main.eddd7402.js",
     "index.html": "/h2o-test/index.html",
-    "main.e6c13ad2.css.map": "/h2o-test/static/css/main.e6c13ad2.css.map",
-    "main.e87bf4d8.js.map": "/h2o-test/static/js/main.e87bf4d8.js.map"
+    "main.d786631d.css.map": "/h2o-test/static/css/main.d786631d.css.map",
+    "main.eddd7402.js.map": "/h2o-test/static/js/main.eddd7402.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.e87bf4d8.js"
+    "static/css/main.d786631d.css",
+    "static/js/main.eddd7402.js"
   ]
 }
