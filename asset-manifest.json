@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/h2o-test/static/css/main.d786631d.css",
-    "main.js": "/h2o-test/static/js/main.eddd7402.js",
+    "main.js": "/h2o-test/static/js/main.6747a8da.js",
     "index.html": "/h2o-test/index.html",
     "main.d786631d.css.map": "/h2o-test/static/css/main.d786631d.css.map",
-    "main.eddd7402.js.map": "/h2o-test/static/js/main.eddd7402.js.map"
+    "main.6747a8da.js.map": "/h2o-test/static/js/main.6747a8da.js.map"
   },
   "entrypoints": [
     "static/css/main.d786631d.css",
-    "static/js/main.eddd7402.js"
+    "static/js/main.6747a8da.js"
   ]
 }
